@@ -30,17 +30,17 @@ import copy
 
 ptn_comment=re.compile(r'^#|^[\s\t]?$')
 
-class mass_intensity_charge():
-    def __init__(self, mass=0.0, intensity=0.0, charge=-1):
-        self.mass=mass
+class mz_intensity_charge():
+    def __init__(self, mz=0.0, intensity=0.0, charge=-1):
+        self.mz=mz
         self.intensity=intensity
         self.charge=charge
 
     def __str__(self):
         if self.charge==-1:
-            return '\t'.join([str(self.mass), str(self.intensity)])
+            return '\t'.join([str(self.mz), str(self.intensity)])
         else:
-            return '\t'.join([str(self.mass), str(self.intensity), str(self.charge)])
+            return '\t'.join([str(self.mz), str(self.intensity), str(self.charge)])
         
 
 def read_peaklist(file):
@@ -55,7 +55,7 @@ def read_peaklist(file):
         in_spec_peaklist = False
         file_header = {}
         spec_header = {}
-        list_mass_intensity_charge=[]
+        list_mz_intensity_charge=[]
         spectrum={}
         
         for line in f:
@@ -78,9 +78,9 @@ def read_peaklist(file):
                 in_spec_peaklist = False
                 spectrum['file_header']=file_header
                 spectrum['header']=copy.deepcopy(spec_header)
-                spectrum['mass_intensity_charge']=sorted(list_mass_intensity_charge, key=lambda x:x.mass)
+                spectrum['mz_intensity_charge']=sorted(list_mz_intensity_charge, key=lambda x:x.mz)
                 spec_header = {}
-                list_mass_intensity_charge=[]
+                list_mz_intensity_charge=[]
                 
                 if is_ms2_mgf:
                     yield spectrum
@@ -88,16 +88,16 @@ def read_peaklist(file):
             else:
                 l=line.strip().split()
                 if len(l)==2:
-                    peak=mass_intensity_charge(mass=l[0], intensity=l[1])
+                    peak=mz_intensity_charge(mz=l[0], intensity=l[1])
                 if len(l)==3:
-                    peak=mass_intensity_charge(mass=l[0], intensity=l[1], charge=l[2])
-                list_mass_intensity_charge.append(peak)
+                    peak=mz_intensity_charge(mz=l[0], intensity=l[1], charge=l[2])
+                list_mz_intensity_charge.append(peak)
                         
         if not(is_ms2_mgf):
             spectrum['file_header']=file_header
             spectrum['header']=spec_header
             spec_header = {}
-            spectrum['mass_intensity_charge']=sorted(list_mass_intensity_charge, key=lambda x:x.mass)
+            spectrum['mz_intensity_charge']=sorted(list_mz_intensity_charge, key=lambda x:x.mz)
             yield spectrum
 
 if __name__ == '__main__':
@@ -120,5 +120,5 @@ if __name__ == '__main__':
             for key,val in spec['header'].items():
                 print(key+':', val)
         print('Peaklist:')
-        for dat in spec['mass_intensity_charge']:
+        for dat in spec['mz_intensity_charge']:
             print(dat)
