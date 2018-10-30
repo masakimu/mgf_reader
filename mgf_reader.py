@@ -86,7 +86,8 @@ def read_peaklist(file):
                     yield spectrum
                     
             else:
-                l=line.strip().split()
+                delimiters=r'[ \t,]+'
+                l=re.split(delimiters, line.strip())
                 if len(l)==2:
                     peak=mz_intensity_charge(mz=l[0], intensity=l[1])
                 if len(l)==3:
