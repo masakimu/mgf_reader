@@ -88,6 +88,8 @@ def read_peaklist(file):
             else:
                 delimiters=r'[ \t,]+'
                 l=re.split(delimiters, line.strip())
+                if len(l)==1:
+                    peak=mz_intensity_charge(mz=l[0])
                 if len(l)==2:
                     peak=mz_intensity_charge(mz=l[0], intensity=l[1])
                 if len(l)==3:
